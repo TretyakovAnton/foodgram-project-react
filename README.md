@@ -1,5 +1,6 @@
 # praktikum_new_diplom
-![Foodgram Workflow](https://github.com/TretyakovAnton/foodgram-project-react/actions/workflows/foodgram_workflow.yaml/badge.svg)
+https://github.com/TretyakovAnton/foodgram-project-react/workflows/docker-image.yml/badge.svg
+
 Проект "Продуктовый помощник»: сайт, на котором пользователи будут публиковать 
 рецепты, добавлять чужие рецепты в избранное и подписываться на публикации 
 других авторов. Сервис «Список покупок» позволит пользователям создавать 
