@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -5,13 +6,13 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .filters import IngredientSearchFilter, RecipeFilter
+from .mixins import CustomModelViewSet
 from .models import (
     FavoriteRecipe, Ingredient, IngredientForRecipe, Recipe, ShoppingCart, Tag
 )
-from .pagination import PageLimitPagination
 from .permissions import IsAuthorOrReadOnly
 from .serializers import (
     FavoriteSerializer, IngredientSerializer, RecipeListSerializer,
@@ -30,7 +31,7 @@ class TagsViewSet(ReadOnlyModelViewSet):
 
 class IngredientsViewSet(ReadOnlyModelViewSet):
     """
-    ViewSet для ингридиентов.
+    ViewSet для ингредиентов.
     """
     queryset = Ingredient.objects.all()
     permission_classes = (AllowAny,)
@@ -39,7 +40,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     search_fields = ('^name',)
 
 
-class RecipeViewSet(ModelViewSet):
+class RecipeViewSet(CustomModelViewSet):
     """
     ViewSet для рецептов.
     """
@@ -47,7 +48,6 @@ class RecipeViewSet(ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly]
     filter_backends = [DjangoFilterBackend]
     filterset_class = RecipeFilter
-    pagination_class = PageLimitPagination
 
     def get_serializer_class(self):
         if self.action in ('list', 'retrieve'):
@@ -104,15 +104,12 @@ class RecipeViewSet(ModelViewSet):
             recipe__shopping_cart__user=user
         )
         ingredients = recipes.values(
-            'recipe__name',
             'ingredient__name',
             'ingredient__measurement_unit',
-            'amount'
-        ).order_by('recipe__name')
+        ).annotate(amount=Sum('amount'))
 
         shopping_cart = '\n'.join([
-            f'{ingredient["recipe__name"]}: {ingredient["ingredient__name"]}-'
-            f'{ingredient["amount"]}'
+            f'{ingredient["ingredient__name"]}: {ingredient["amount"]}'
             f'{ingredient["ingredient__measurement_unit"]}'
             for ingredient in ingredients
         ])

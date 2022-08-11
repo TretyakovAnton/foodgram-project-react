@@ -1,7 +1,7 @@
 from rest_framework import serializers
+from drf_base64.fields import Base64ImageField
 
 from users.serializers import CustomUserSerializer
-from .fields import Base64ImageField
 from .models import (
     FavoriteRecipe, Ingredient, IngredientForRecipe, Recipe, ShoppingCart, Tag
 )
@@ -13,8 +13,13 @@ class TagSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Tag
-        fields = '__all__'
-        read_only_fields = '__all__',
+        fields = (
+            'id',
+            'name',
+            'color',
+            'slug'
+        )
+        read_only_fields = ('__all__',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -23,8 +28,12 @@ class IngredientSerializer(serializers.ModelSerializer):
     """
     class Meta:
         model = Ingredient
-        fields = '__all__'
-        read_only_fields = '__all__',
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+        )
+        read_only_fields = ('__all__',)
 
 
 class IngredientForRecipeSerializer(serializers.ModelSerializer):
@@ -95,7 +104,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
 
 class AmountIngredientForRecipeCreatSerializer(serializers.ModelSerializer):
     """
-    Сериализатор для добавление ингридиентов в рецепт.
+    Сериализатор для добавление ингредиентов в рецепт.
     """
     id = serializers.PrimaryKeyRelatedField(queryset=Ingredient.objects.all())
     amount = serializers.IntegerField()
@@ -135,7 +144,7 @@ class RecipeCreatSerializer(serializers.ModelSerializer):
     def validate(self, data):
         ingredients = data['ingredients']
         if not ingredients:
-            raise serializers.ValidationError('Нужен хоть один ингридиент')
+            raise serializers.ValidationError('Нужен хоть один ингредиент')
         ingredients_list = []
         for ingredient in ingredients:
             ingredient_id = ingredient['id']
@@ -151,12 +160,22 @@ class RecipeCreatSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def add_ingredients_and_tags(recipe, ingredients, tags):
-        for ingredient in ingredients:
-            IngredientForRecipe.objects.create(
+        # for ingredient in ingredients:
+        #     IngredientForRecipe.objects.create(
+        #         recipe=recipe,
+        #         ingredient=ingredient['id'],
+        #         amount=ingredient['amount']
+        #     )
+
+        obj = [
+            IngredientForRecipe(
                 recipe=recipe,
                 ingredient=ingredient['id'],
-                amount=ingredient['amount']
+                amount=ingredient['amount'],
             )
+            for ingredient in ingredients
+        ]
+        IngredientForRecipe.objects.bulk_create(obj)
         for tag in tags:
             recipe.tags.add(tag)
 

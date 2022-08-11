@@ -57,9 +57,9 @@ class RecipesAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     inlines = (RecipeIngredientsInline,)
 
-    @staticmethod
-    def favorite_count(recipe):
+    def favorite_count(self, recipe):
         return recipe.favorite.count()
+    favorite_count.short_description = "Количество добавлений в избранное"
 
 
 @admin.register(FavoriteRecipe)

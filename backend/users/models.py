@@ -33,10 +33,9 @@ class User(AbstractUser):
         blank=True
     )
 
-    def __str__(self):
-        return self.email
-
     class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
         ordering = ('id',)
         constraints = [
             UniqueConstraint(
@@ -44,6 +43,9 @@ class User(AbstractUser):
                 name='unique_user'
             )
         ]
+
+    def __str__(self):
+        return self.email
 
 
 class Follow(models.Model):
@@ -64,6 +66,8 @@ class Follow(models.Model):
     )
 
     class Meta:
+        verbose_name = 'Подписки на пользователей'
+        verbose_name_plural = 'Подписку на пользователя'
         constraints = [
             UniqueConstraint(
                 fields=['user', 'following'],
