@@ -29,8 +29,8 @@
 
 Сначала нужно клонировать репозиторий и перейти в корневую папку:
 ```
-git clone git@github.com:TretyakovAnton/yamdb_final.git
-cd yamdb_final
+git clone git@github.com:TretyakovAnton/foodgram-project-react.git
+cd foodgram-project-react
 ```
 Затем нужно перейти в папку yamdb_final/infra и создать в ней файл .env с 
 переменными окружения, необходимыми для работы приложения.
@@ -71,7 +71,7 @@ sudo  docker-compose --version
 ## Подготовка репозитория на GitHub
 
 Для использования Continuous Integration и Continuous Deployment необходимо в репозитории на GitHub прописать Secrets - переменные доступа к вашим сервисам.
-Переменые прописаны в workflows/yamdb_workflow.yaml
+Переменые прописаны в workflows/docker-image.yml
 ```
 DOCKER_PASSWORD, DOCKER_USERNAME - для загрузки и скачивания образа с DockerHub 
 USER, HOST, PASSPHRASE, SSH_KEY - для подключения к удаленному серверу 
@@ -85,7 +85,7 @@ DB_PORT=5432
 ```
 
 ## После каждого обновления репозитория (`git push`) будет происходить:
-1. Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8) и запуск pytest из репозитория yamdb_final
+1. Проверка кода на соответствие стандарту PEP8 (с помощью пакета flake8)
 2. Сборка и доставка докер-образов на Docker Hub.
 3. Автоматический деплой.
 4. Отправка уведомления в Telegram.
@@ -114,7 +114,7 @@ docker-compose stop
 docker-compose start 
 ```
 # Ссылка на проект:
-http://84.252.142.163/
+http://51.250.106.203/
 
 ## Примеры запросов:
 ### Пользователи.

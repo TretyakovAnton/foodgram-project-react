@@ -7,7 +7,7 @@ services:
     env_file:
       - ./.env
   backend:
-    image: snowphoen1x/food:1.0
+    image: snowphoen1x/food:latest
     restart: always
     volumes:
       - static_value:/app/static/
@@ -17,7 +17,7 @@ services:
     env_file:
       - ./.env
   frontend:
-    image: snowphoen1x/food_front:1.0
+    image: snowphoen1x/food_front:latest
     volumes:
       - ../frontend/:/app/result_build/
   nginx:
