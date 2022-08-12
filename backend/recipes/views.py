@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from .filters import IngredientSearchFilter, RecipeFilter
-from .mixins import CustomModelViewSet
+from .mixins import PaginatorMixin
 from .models import (
     FavoriteRecipe, Ingredient, IngredientForRecipe, Recipe, ShoppingCart, Tag
 )
@@ -40,7 +40,7 @@ class IngredientsViewSet(ReadOnlyModelViewSet):
     search_fields = ('^name',)
 
 
-class RecipeViewSet(CustomModelViewSet):
+class RecipeViewSet(PaginatorMixin):
     """
     ViewSet для рецептов.
     """
@@ -56,18 +56,21 @@ class RecipeViewSet(CustomModelViewSet):
 
     @action(
         detail=True,
-        methods=['POST', 'DELETE'],
+        methods=['POST'],
+        url_path='favorite',
         permission_classes=[IsAuthenticated]
     )
-    def favorite(self, request, pk):
-        if request.method == 'POST':
-            data = {'user': request.user.id, 'recipe': pk}
-            serializer = FavoriteSerializer(
-                data=data, context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def in_favorite(self, request, pk):
+        data = {'user': request.user.id, 'recipe': pk}
+        serializer = FavoriteSerializer(
+            data=data, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @in_favorite.mapping.delete
+    def out_favorite(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
         favorite = get_object_or_404(FavoriteRecipe, user=user, recipe=recipe)
@@ -76,19 +79,21 @@ class RecipeViewSet(CustomModelViewSet):
 
     @action(
         detail=True,
-        methods=['POST', 'DELETE'],
+        methods=['POST'],
+        url_path='shopping_cart',
         permission_classes=[IsAuthenticated]
     )
-    def shopping_cart(self, request, pk):
-        if request.method == 'POST':
-            data = {'user': request.user.id, 'recipe': pk}
-            serializer = ShoppingCartSerializer(
-                data=data, context={'request': request}
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
+    def in_shopping_cart(self, request, pk):
+        data = {'user': request.user.id, 'recipe': pk}
+        serializer = ShoppingCartSerializer(
+            data=data, context={'request': request}
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @in_shopping_cart.mapping.delete
+    def out_shopping_cart(self, request, pk):
         user = request.user
         recipe = get_object_or_404(Recipe, id=pk)
         shopping_cart = get_object_or_404(

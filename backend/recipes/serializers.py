@@ -81,7 +81,8 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'cooking_time'
         )
 
-    def get_ingredients(self, recipe):
+    @staticmethod
+    def get_ingredients(recipe):
         queryset = IngredientForRecipe.objects.filter(recipe=recipe)
         return IngredientForRecipeSerializer(queryset, many=True).data
 
@@ -160,14 +161,7 @@ class RecipeCreatSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def add_ingredients_and_tags(recipe, ingredients, tags):
-        # for ingredient in ingredients:
-        #     IngredientForRecipe.objects.create(
-        #         recipe=recipe,
-        #         ingredient=ingredient['id'],
-        #         amount=ingredient['amount']
-        #     )
-
-        obj = [
+        objects = [
             IngredientForRecipe(
                 recipe=recipe,
                 ingredient=ingredient['id'],
@@ -175,7 +169,7 @@ class RecipeCreatSerializer(serializers.ModelSerializer):
             )
             for ingredient in ingredients
         ]
-        IngredientForRecipe.objects.bulk_create(obj)
+        IngredientForRecipe.objects.bulk_create(objects)
         for tag in tags:
             recipe.tags.add(tag)
 
@@ -220,7 +214,7 @@ class RecipeSerializer(serializers.ModelSerializer):
 
 class FavoriteSerializer(serializers.ModelSerializer):
     """
-    Сериализатор добавления рецепта в избранное и список покупок.
+    Сериализатор добавления рецепта в избранное.
     """
     class Meta:
         model = FavoriteRecipe
@@ -244,6 +238,9 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 
 class ShoppingCartSerializer(serializers.ModelSerializer):
+    """
+    Сериализатор добавления рецепта в список покупок.
+    """
     class Meta:
         model = ShoppingCart
         fields = (
