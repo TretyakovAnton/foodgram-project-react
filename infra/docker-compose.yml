@@ -7,7 +7,9 @@ services:
     env_file:
       - ./.env
   backend:
-    image: snowphoen1x/food:latest
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     restart: always
     volumes:
       - static_value:/app/static/
