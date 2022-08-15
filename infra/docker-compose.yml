@@ -11,8 +11,8 @@ services:
     image: snowphoen1x/food:latest
     restart: always
     volumes:
-      - static_value:/app/static/
-      - media_value:/app/media/
+      - static_value:/app/backend/static/
+      - media_value:/app/backend/media/
     depends_on:
       - db
     env_file:
@@ -36,7 +36,6 @@ services:
       - static_value:/var/html/static/
       - media_value:/var/html/media/
     depends_on:
-      - backend
       - frontend
 
 volumes:
