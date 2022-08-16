@@ -3,5 +3,5 @@ WORKDIR /app
 COPY . .
 RUN python -m pip install --upgrade pip
 RUN pip install -r requirements.txt
-COPY /app/nginx.conf /etc/nginx/conf.d/default.conf
+COPY /app/infra/nginx.conf /etc/nginx/conf.d/default.conf
 CMD ["gunicorn", "backend.wsgi:application", "--bind", "0:8000"]
