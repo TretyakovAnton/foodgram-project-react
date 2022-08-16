@@ -38,15 +38,17 @@ class FollowViewSet(UserViewSet, PaginatorMixin):
         follow.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(detail=False,
-            methods=["GET"],
-            permission_classes=[IsAuthenticated])
+    @action(
+        detail=False,
+        methods=['GET'],
+        permission_classes=[IsAuthenticated]
+    )
     def subscriptions(self, request):
-        user = self.request.user
-        queryset = User.objects.filter(following__user=user)
-        serializer = self.get_serializer(
-            queryset,
-            many=True,
+        user = request.user
+        queryset = Follow.objects.filter(user=user)
+        pages = self.paginate_queryset(queryset)
+        serializer = FollowSerializer(
+            pages, many=True,
             context={'request': request}
         )
-        return Response(serializer.data)
+        return self.get_paginated_response(serializer.data)

@@ -63,7 +63,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
     ingredients = serializers.SerializerMethodField(read_only=True)
-    is_favorite = serializers.SerializerMethodField(read_only=True)
+    is_favorited = serializers.SerializerMethodField(read_only=True)
     is_in_shopping_cart = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -73,7 +73,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
             'tags',
             'author',
             'ingredients',
-            'is_favorite',
+            'is_favorited',
             'is_in_shopping_cart',
             'name',
             'image',
@@ -86,7 +86,7 @@ class RecipeListSerializer(serializers.ModelSerializer):
         queryset = IngredientForRecipe.objects.filter(recipe=recipe)
         return IngredientForRecipeSerializer(queryset, many=True).data
 
-    def get_is_favorite(self, recipe):
+    def get_is_favorited(self, recipe):
         request = self.context.get('request')
         if not request or request.user.is_anonymous:
             return False
@@ -159,8 +159,7 @@ class RecipeCreatSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Нужен хоть один тег')
         return data
 
-    @staticmethod
-    def add_ingredients_and_tags(recipe, ingredients, tags):
+    def add_ingredients_and_tags(self, recipe, ingredients, tags):
         objects = [
             IngredientForRecipe(
                 recipe=recipe,
