@@ -9,7 +9,6 @@ services:
       - ./.env
   backend:
     image: snowphoen1x/food:latest
-    #build: ../backend
     restart: always
     volumes:
       - static_value:/app/static/
@@ -20,13 +19,12 @@ services:
       - ./.env
   frontend:
     image: snowphoen1x/food_front:latest
-    #build: ../frontend
     volumes:
       - ../frontend/:/app/result_build/
     depends_on:
       - backend
   nginx:
-    image: nginx:1.19.3
+    image: nginx:1.21.3-alpine
     ports:
       - 80:80
     volumes:
