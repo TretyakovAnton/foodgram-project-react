@@ -1,12 +1,16 @@
 # praktikum_new_diplom
 [![Django-app workflow](https://github.com/TretyakovAnton/foodgram-project-react/workflows/docker-image.yml/badge.svg)](https://github.com/TretyakovAnton/foodgram-project-react/workflows/docker-image.yml)
 
-
 Проект "Продуктовый помощник»: сайт, на котором пользователи будут публиковать 
 рецепты, добавлять чужие рецепты в избранное и подписываться на публикации 
 других авторов. Сервис «Список покупок» позволит пользователям создавать 
 список продуктов, которые нужно купить для приготовления выбранных блюд."
 
+# Ссылка на проект:
+http://84.252.143.100/
+Логин: Admin
+Почта: 1@1.ru
+Пароль: 112233
 
 ## Технологический стек
 [![Python](https://img.shields.io/badge/-Python-464646?style=flat&logo=Python&logoColor=56C0C0&color=008080)](https://www.python.org/)
@@ -115,8 +119,6 @@ docker-compose stop
 ```
 docker-compose start 
 ```
-# Ссылка на проект:
-http://51.250.106.203/
 
 ## Примеры запросов:
 ### Пользователи.
